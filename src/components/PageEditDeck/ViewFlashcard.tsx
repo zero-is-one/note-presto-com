@@ -1,8 +1,9 @@
+import { FlashcardTextEditor } from "@/components/FlashcardTextEditor/FlashcardTextEditor";
+import { LayoutSimpleBar } from "@/components/LayoutSimpleBar/LayoutSimpleBar";
 import { DeckContainer } from "@/hooks/useDeck";
 import { ActionIcon } from "@mantine/core";
 import { MdArrowBack } from "react-icons/md";
 import { useNavigate, useParams } from "react-router-dom";
-import { LayoutSimpleBar } from "../LayoutSimpleBar/LayoutSimpleBar";
 
 export const ViewFlashcard = () => {
   const navigate = useNavigate();
@@ -21,6 +22,7 @@ export const ViewFlashcard = () => {
       }
     >
       {flashcard.id}
+      <FlashcardTextEditor />
     </LayoutSimpleBar>
   );
 };

@@ -1,18 +1,19 @@
-import { mergeAttributes, Node } from "@tiptap/core";
+import { SheetMusicNote } from "@/components/SheetMusicNote/SheetMusicNote";
+import { Clef, KeySignature, keySignatures } from "@/types";
+import { Box, Group, Select } from "@mantine/core";
+import { RichTextEditor, useRichTextEditorContext } from "@mantine/tiptap";
+import { IconStar } from "@tabler/icons-react";
+import { Node, mergeAttributes } from "@tiptap/core";
 import {
-  ReactNodeViewRenderer,
-  NodeViewWrapper,
   NodeViewProps,
+  NodeViewWrapper,
+  ReactNodeViewRenderer,
 } from "@tiptap/react";
-import { NoteSelectors } from "@/components/NoteSelectors/NoteSelectors";
-import { SingleNoteSheetMusic } from "@/components/SingleNoteSheetMusic/SingleNoteSheetMusic.js";
-import { Flex, Box, Select, HStack } from "@mantine/core";
-import { Clef, clefs, KeySignature, keySignatures } from "@/types";
 
 declare module "@tiptap/core" {
   interface Commands<ReturnType> {
-    singleNote: {
-      setSingleNote: (options: {
+    sheetMusicNote: {
+      insertSheetMusicNote: (options: {
         noteName: string;
         clef: Clef;
         keySignature: KeySignature;
@@ -21,8 +22,27 @@ declare module "@tiptap/core" {
   }
 }
 
-export const SingleNoteSheetMusicExtension = Node.create({
-  name: "singleNoteSheetMusicExtension",
+export const InsertMusicNoteControl = () => {
+  const { editor } = useRichTextEditorContext();
+  return (
+    <RichTextEditor.Control
+      onClick={() =>
+        editor?.commands.insertSheetMusicNote({
+          noteName: "A4",
+          clef: "treble",
+          keySignature: "C",
+        })
+      }
+      aria-label="Insert Sheet Music Note"
+      title="Insert Sheet Music Note"
+    >
+      <IconStar stroke={1.5} size="1rem" />
+    </RichTextEditor.Control>
+  );
+};
+
+export const sheetMusicNoteExtension = Node.create({
+  name: "sheetMusicNoteExtension",
   group: "block",
   atom: true,
   draggable: true,
@@ -43,7 +63,7 @@ export const SingleNoteSheetMusicExtension = Node.create({
 
   addCommands() {
     return {
-      setSingleNote:
+      insertSheetMusicNote:
         (options) =>
         ({ commands }) => {
           return commands.insertContent({
@@ -57,7 +77,7 @@ export const SingleNoteSheetMusicExtension = Node.create({
   parseHTML() {
     return [
       {
-        tag: "single-note",
+        tag: "sheet-music-note",
       },
     ];
   },
@@ -82,28 +102,28 @@ const NodeRenderer = ({
   const isSelected = editor.isEditable && selected;
 
   return (
-    <NodeViewWrapper className="single-note-wrapper">
+    <NodeViewWrapper>
       <Box
         style={{
           outline: `${isSelected ? 3 : 0}px solid #3367D1`,
         }}
-        position={"relative"}
+        pos={"relative"}
       >
         {isSelected && (
-          <HStack
-            position={"absolute"}
-            zIndex={5}
+          <Group
+            pos={"absolute"}
+            style={{ zIndex: 1 }}
             display={"flex"}
             left={0}
             top={0}
             p={1}
           >
-            <Select
+            {/* <Select
               size="md"
               value={clef || "treble"}
-              onChange={(e) => {
+              onChange={(value) => {
                 updateAttributes({
-                  clef: e.target.value,
+                  clef: value,
                 });
               }}
             >
@@ -112,34 +132,30 @@ const NodeRenderer = ({
                   {clef} clef
                 </option>
               ))}
-            </Select>
+            </Select> */}
             <Select
-              size="md"
+              style={{ maxWidth: 84 }}
+              checkIconPosition="right"
               value={keySignature || "C"}
-              onChange={(e) => {
+              data={keySignatures.map((ks) => ({ value: ks, label: ks }))}
+              onChange={(value) => {
                 updateAttributes({
-                  keySignature: e.target.value,
+                  keySignature: value,
                 });
               }}
-            >
-              {keySignatures.map((ks) => (
-                <option key={ks} value={ks}>
-                  {ks} Key
-                </option>
-              ))}
-            </Select>
-            <NoteSelectors
+            />
+            {/* <NoteSelectors
               onChange={(noteName) => {
                 updateAttributes({
                   noteName,
                 });
               }}
               noteName={noteName}
-            />
-          </HStack>
+            /> */}
+          </Group>
         )}
         <div draggable="true" data-drag-handle="">
-          <SingleNoteSheetMusic
+          <SheetMusicNote
             noteName={noteName}
             clef={clef}
             keySignature={keySignature}
