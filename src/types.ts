@@ -32,3 +32,12 @@ export type WithTimestamps = {
   createdAt: Timestamp | FieldValue;
   updatedAt: Timestamp | FieldValue;
 };
+
+export const noteLetters = ["C", "D", "E", "F", "G", "A", "B"] as const;
+export type NoteLetters = (typeof noteLetters)[number];
+
+export const octaves = ["1", "2", "3", "4", "5", "6", "7"] as const;
+export type Octave = (typeof octaves)[number];
+
+export const accidentals = ["natural", "#", "b"] as const;
+export type Accidental = (typeof accidentals)[number];
