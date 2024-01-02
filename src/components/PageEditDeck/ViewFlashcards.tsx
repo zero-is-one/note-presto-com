@@ -1,45 +1,54 @@
 import { LayoutSimpleBar } from "@/components/LayoutSimpleBar/LayoutSimpleBar";
 import { DeckContainer } from "@/hooks/useDeck";
 import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
-import { ActionIcon, Button, Group, Text, Title, rem } from "@mantine/core";
+import { ActionIcon, Button, Group, Title, rem } from "@mantine/core";
 import { useListState } from "@mantine/hooks";
-import { MdArrowBack, MdDragIndicator } from "react-icons/md";
-import { useNavigate } from "react-router-dom";
-
-const data = [
-  { position: 6, mass: 12.011, symbol: "C", name: "Carbon" },
-  { position: 7, mass: 14.007, symbol: "N", name: "Nitrogen" },
-  { position: 39, mass: 88.906, symbol: "Y", name: "Yttrium" },
-  { position: 56, mass: 137.33, symbol: "Ba", name: "Barium" },
-  { position: 58, mass: 140.12, symbol: "Ce", name: "Cerium" },
-];
+import {
+  MdArrowBack,
+  MdDragIndicator,
+  MdEditNote,
+  MdOutlinePostAdd,
+} from "react-icons/md";
+import { Link, useNavigate } from "react-router-dom";
 
 export function ViewFlashcards() {
   const navigate = useNavigate();
-  const {
-    deck,
-    update: updateDeck,
-    getDefaultFlashcard,
-  } = DeckContainer.useContainer();
+  const { deck } = DeckContainer.useContainer();
   const [state, handlers] = useListState(deck.flashcards);
 
   const items = state.map((item, index) => (
     <Draggable key={item.id} index={index} draggableId={item.id}>
       {(provided, snapshot) => (
-        <Group
-          bg={snapshot.isDragging ? "red" : "white"}
+        <Button.Group
           ref={provided.innerRef}
           {...provided.draggableProps}
+          mb={6}
+          style={getDragXAxisLockStyle({
+            ...provided.draggableProps.style,
+            ...snapshot,
+          })}
         >
-          <div {...provided.dragHandleProps}>
+          <Button
+            component={"div"}
+            {...provided.dragHandleProps}
+            variant={snapshot.isDragging ? "filled" : "light"}
+          >
             <MdDragIndicator
               style={{ width: rem(18), height: rem(18) }}
               stroke={1.5}
             />
-          </div>
-          <Text>{item.detectNoteName} - </Text>
-          <Text>{item.id}</Text>
-        </Group>
+          </Button>
+
+          <Button
+            component={Link}
+            to={item.id}
+            w={"100%"}
+            variant="light"
+            rightSection={<MdEditNote fullWidth size={14} />}
+          >
+            {item.noteName} -{item.id}{" "}
+          </Button>
+        </Button.Group>
       )}
     </Draggable>
   ));
@@ -52,19 +61,16 @@ export function ViewFlashcards() {
         </ActionIcon>
       }
     >
-      <Group justify="space-between">
-        <Title>Flashcards</Title>
+      <Group justify="space-between" align="flex-end" mb="sm">
+        <Title size={"h2"}>Flashcards</Title>
         <Button
           onClick={() => {
-            const newFlashcard = getDefaultFlashcard();
-            updateDeck((prev) => ({
-              ...prev,
-              flashcards: [...prev.flashcards, newFlashcard],
-            }));
-            navigate(newFlashcard.id);
+            navigate("new");
           }}
+          rightSection={<MdOutlinePostAdd />}
+          size="sm"
         >
-          Add
+          Add Flashcard
         </Button>
       </Group>
       <DragDropContext
@@ -80,7 +86,18 @@ export function ViewFlashcards() {
             </div>
           )}
         </Droppable>
-      </DragDropContext>{" "}
+      </DragDropContext>
     </LayoutSimpleBar>
   );
+}
+
+function getDragXAxisLockStyle(style) {
+  if (style?.transform) {
+    const axisLockY = `translate(0px, ${style.transform.split(",").pop()}`;
+    return {
+      ...style,
+      transform: axisLockY,
+    };
+  }
+  return style;
 }

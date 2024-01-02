@@ -28,9 +28,9 @@ function useDeck(initialState: Deck) {
   const getDefaultFlashcard = () => {
     return {
       id: Math.random().toString(36).replace("0.", ""),
-      frontMarkupJson: getEmptyJson(),
-      backMarkupJson: getEmptyJson(),
-      detectNoteName: "A4",
+      prompt: "",
+      response: "",
+      noteName: "A4",
     } satisfies Flashcard;
   };
 
@@ -64,18 +64,6 @@ function useDeck(initialState: Deck) {
     save,
   };
 }
-
-const getEmptyJson = () => {
-  return {
-    type: "doc",
-    content: [
-      {
-        type: "paragraph",
-        content: [],
-      },
-    ],
-  };
-};
 
 // @ts-expect-error -- See https://github.com/jamiebuilds/unstated-next/issues/45
 export const DeckContainer = createContainer(useDeck);

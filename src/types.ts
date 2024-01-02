@@ -1,12 +1,11 @@
-import { JSONContent } from "@tiptap/react";
 import { FieldValue, Timestamp } from "firebase/firestore";
 import { NoteName } from "tonal";
 
 export type Flashcard = {
   id: string;
-  frontMarkupJson: JSONContent;
-  backMarkupJson: JSONContent;
-  detectNoteName: NoteName;
+  prompt: string;
+  response: string;
+  noteName: NoteName;
 };
 
 export type Deck = {

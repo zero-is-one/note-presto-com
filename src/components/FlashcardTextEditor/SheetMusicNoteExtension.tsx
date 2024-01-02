@@ -1,13 +1,5 @@
 import { SheetMusicNote } from "@/components/SheetMusicNote/SheetMusicNote";
-import {
-  Clef,
-  KeySignature,
-  accidentals,
-  clefs,
-  keySignatures,
-  noteLetters,
-  octaves,
-} from "@/types";
+import { Clef, KeySignature, clefs, keySignatures } from "@/types";
 import {
   ActionIcon,
   Box,
@@ -27,7 +19,7 @@ import {
 } from "@tiptap/react";
 import { useState } from "react";
 import { MdOutlineEditNote, MdQueueMusic } from "react-icons/md";
-import { Note } from "tonal";
+import { MusicNotePicker } from "../MusicNotePicker/MusicNotePicker";
 
 type SheetMusicNoteAttrs = {
   noteName: string;
@@ -152,15 +144,17 @@ const NodeRenderer = ({
           </ActionIcon>
         )}
       </Box>
-      <MusicNoteSettingsModal
-        disclosure={disclosure}
-        settings={node.attrs as SheetMusicNoteAttrs}
-        onSubmit={(settings) => {
-          updateAttributes({
-            ...settings,
-          });
-        }}
-      />
+      {opened && (
+        <MusicNoteSettingsModal
+          disclosure={disclosure}
+          settings={node.attrs as SheetMusicNoteAttrs}
+          onSubmit={(settings) => {
+            updateAttributes({
+              ...settings,
+            });
+          }}
+        />
+      )}
     </NodeViewWrapper>
   );
 };
@@ -176,9 +170,6 @@ const MusicNoteSettingsModal = ({
 }) => {
   const [value, setValue] = useState(settings);
   const [opened, { close }] = disclosure;
-  const note = Note.get(value.noteName || "A4");
-
-  console.log(note.oct);
 
   return (
     <Modal
@@ -187,55 +178,19 @@ const MusicNoteSettingsModal = ({
       title="Edit Music Note"
       transitionProps={{ transition: "fade", duration: 200 }}
     >
+      <Box mb={"xs"}>
+        <MusicNotePicker
+          noteName={value.noteName}
+          onChange={(noteName) => {
+            setValue({
+              ...value,
+              noteName,
+            });
+          }}
+        />
+      </Box>
+
       <SimpleGrid cols={3}>
-        <Select
-          label="Note"
-          checkIconPosition="right"
-          value={note.letter || "C"}
-          data={noteLetters.map((l) => ({ value: l, label: l }))}
-          onChange={(letter) => {
-            setValue({
-              ...value,
-              noteName: `${letter}${note.acc}${note.oct}`,
-            });
-          }}
-        />
-
-        <Select
-          label="Accidentals"
-          checkIconPosition="right"
-          value={note.acc || ""}
-          data={accidentals.map((acc) => ({
-            value: acc.replace("natural", ""),
-            label: acc
-              .replace("#", "♯ (sharp)")
-              .replace("b", "♭ (flat)")
-              .replace("natural", "♮ (natural)"),
-          }))}
-          onChange={(acc) => {
-            setValue({
-              ...value,
-              noteName: `${note.letter}${acc}${note.oct}`,
-            });
-          }}
-        />
-
-        <Select
-          label="Octave"
-          checkIconPosition="right"
-          value={`${note?.oct}` || "4"}
-          data={octaves.map((oct) => ({
-            value: oct,
-            label: oct,
-          }))}
-          onChange={(oct) => {
-            setValue({
-              ...value,
-              noteName: `${note.letter}${note.acc}${oct}`,
-            });
-          }}
-        />
-
         <Select
           label="Key Signature"
           checkIconPosition="right"

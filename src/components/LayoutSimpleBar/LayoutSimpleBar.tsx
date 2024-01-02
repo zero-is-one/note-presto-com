@@ -13,7 +13,7 @@ export const LayoutSimpleBar = ({
   rightItem?: ReactNode;
 }) => {
   return (
-    <AppShell padding="md" header={{ height: 64 }}>
+    <AppShell transitionDuration={0} padding="md" header={{ height: 64 }}>
       <AppShell.Header>
         <Group pos={"relative"} px={"sm"} justify="space-between" h={"100%"}>
           <Box>{leftItem}</Box>
