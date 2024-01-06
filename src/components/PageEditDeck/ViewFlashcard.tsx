@@ -19,7 +19,7 @@ export const ViewFlashcard = () => {
   const [flashcard, setFlashcard] = useState(
     flashcardId === "new"
       ? getDefaultFlashcard()
-      : deck.flashcards.find((f) => f.id === flashcardId),
+      : deck?.flashcards.find((f) => f.id === flashcardId),
   );
 
   if (!flashcard) return <LayoutSimpleBar>Flashcard not found</LayoutSimpleBar>;
@@ -34,6 +34,7 @@ export const ViewFlashcard = () => {
       rightItem={
         <Button
           onClick={() => {
+            if (!deck) return;
             if (flashcardId === "new") {
               updateDeck({
                 ...deck,
@@ -51,7 +52,7 @@ export const ViewFlashcard = () => {
             navigate(-1);
           }}
         >
-          Save
+          Update Card
         </Button>
       }
     >

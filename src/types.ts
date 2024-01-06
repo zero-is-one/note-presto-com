@@ -26,6 +26,7 @@ export const keySignatures = [
 ] as const;
 
 export type KeySignature = (typeof keySignatures)[number];
+
 export type WithId = { id: string };
 export type WithTimestamps = {
   createdAt: Timestamp | FieldValue;

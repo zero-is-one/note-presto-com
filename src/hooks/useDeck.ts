@@ -7,8 +7,8 @@ import {
   serverTimestamp,
   setDoc,
 } from "firebase/firestore";
-import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useDocumentDataOnce } from "react-firebase-hooks/firestore";
 import { createContainer } from "unstated-next";
 
 export const getEmptyDeck = (): Deck => {
@@ -19,26 +19,36 @@ export const getEmptyDeck = (): Deck => {
   };
 };
 
-function useDeck(initialState: Deck) {
-  const { deckId } = useParams();
+const getDefaultFlashcard = () => {
+  return {
+    id: Math.random().toString(36).replace("0.", ""),
+    prompt: "",
+    response: "",
+    noteName: "A4",
+  } satisfies Flashcard;
+};
 
-  const [deck, update] = useState<Deck>({
-    ...initialState,
-  });
-  const getDefaultFlashcard = () => {
-    return {
-      id: Math.random().toString(36).replace("0.", ""),
-      prompt: "",
-      response: "",
-      noteName: "A4",
-    } satisfies Flashcard;
-  };
+function useDeck(initialState?: string) {
+  const deckId = initialState;
+  const [deck, setDeck] = useState<Deck | undefined>();
+  const [deckData, loading, error] = useDocumentDataOnce(
+    deckId ? doc(firestore, "decks", deckId) : null,
+  );
 
-  const save = (id?: string) => {
-    if (!id) {
-      id = deckId;
-    }
+  useEffect(() => {
+    if (deckId) return; // not a new deck
+    setDeck(getEmptyDeck());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
+  useEffect(() => {
+    if (!deckData) return;
+    if (deck) return;
+    setDeck(deckData as Deck);
+  }, [deckData, deck]);
+
+  const save = () => {
+    if (!deck) return;
     const decksCollection = collection(firestore, "decks");
 
     const updatedDeck: Deck | WithTimestamps = {
@@ -46,24 +56,18 @@ function useDeck(initialState: Deck) {
       updatedAt: serverTimestamp(),
     };
 
-    if (deck.createdAt === undefined)
+    if (!deckId)
       return addDoc(decksCollection, {
         ...updatedDeck,
         createdAt: serverTimestamp(),
       });
 
-    return setDoc(doc(decksCollection, id as string), updatedDeck, {
+    return setDoc(doc(decksCollection, deckId), updatedDeck, {
       merge: true,
     });
   };
 
-  return {
-    getDefaultFlashcard,
-    deck,
-    update,
-    save,
-  };
+  return { loading, error, getDefaultFlashcard, deck, update: setDeck, save };
 }
 
-// @ts-expect-error -- See https://github.com/jamiebuilds/unstated-next/issues/45
 export const DeckContainer = createContainer(useDeck);

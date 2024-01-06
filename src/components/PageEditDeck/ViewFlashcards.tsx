@@ -13,7 +13,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 export function ViewFlashcards() {
   const navigate = useNavigate();
-  const { deck } = DeckContainer.useContainer();
+  const { deck, save: saveDeck } = DeckContainer.useContainer();
   const [state, handlers] = useListState(deck.flashcards);
 
   const items = state.map((item, index) => (
@@ -59,6 +59,16 @@ export function ViewFlashcards() {
         <ActionIcon variant="subtle" size={32} onClick={() => navigate(-1)}>
           <MdArrowBack size={24} />
         </ActionIcon>
+      }
+      rightItem={
+        <Button
+          onClick={async () => {
+            await saveDeck();
+            navigate("/");
+          }}
+        >
+          Save Deck
+        </Button>
       }
     >
       <Group justify="space-between" align="flex-end" mb="sm">
