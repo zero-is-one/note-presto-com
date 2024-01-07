@@ -1,12 +1,14 @@
 import { LayoutMain } from "@/components/LayoutMain/LayoutMain";
 import { useDecks } from "@/hooks/useDecks";
 import {
+  Badge,
   Button,
   Card,
   Container,
   Divider,
   Group,
   SimpleGrid,
+  Stack,
   Title,
 } from "@mantine/core";
 import { Link as ReactRouterLink, useNavigate } from "react-router-dom";
@@ -38,17 +40,27 @@ export const PageHome = () => {
           <SimpleGrid cols={3}>
             {decks.map((deck) => (
               <Card withBorder p="xl" radius="md">
-                {deck.name} - {deck.flashcards.length} cards
-                <Button
-                  to={`/decks/${deck.id}/edit`}
-                  component={ReactRouterLink}
-                >
-                  Edit
-                </Button>
+                <Stack>
+                  <Group justify="space-between">
+                    <Title order={3}>{deck.name}</Title>
+                    <Badge color="blue" variant="light">
+                      {deck.flashcards.length} cards
+                    </Badge>
+                  </Group>
+                  <Button
+                    to={`/decks/${deck.id}/edit`}
+                    component={ReactRouterLink}
+                  >
+                    Edit
+                  </Button>{" "}
+                  <Button to={`/play/${deck.id}`} component={ReactRouterLink}>
+                    Play
+                  </Button>
+                </Stack>
               </Card>
             ))}
           </SimpleGrid>
-        )}{" "}
+        )}
       </Container>
     </LayoutMain>
   );

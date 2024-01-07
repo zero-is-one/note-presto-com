@@ -1,20 +1,21 @@
 import { LayoutSimpleBar } from "@/components/LayoutSimpleBar/LayoutSimpleBar";
-import { DeckContainer } from "@/hooks/useDeck";
+import { useDeckContainer } from "@/hooks/useDeck";
+import { Deck } from "@/types";
 import { Button, CloseButton, Stack, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useNavigate } from "react-router-dom";
 
 export const ViewGeneral = () => {
   const navigate = useNavigate();
-  const { update: updateDeck, deck } = DeckContainer.useContainer();
+  const { update: updateDeck, deck } = useDeckContainer();
 
   const form = useForm({
     initialValues: {
-      name: deck.name || "",
-      description: deck.description || "",
+      name: deck?.name || "",
+      description: deck?.description || "",
     },
     validate: {
-      name: (value, t, q) =>
+      name: (value) =>
         value.length < 4 ? "Name must have at least 4 letters" : null,
       description: (value) =>
         value.length < 4 ? "Description must have at least 4 letters" : null,
@@ -22,7 +23,7 @@ export const ViewGeneral = () => {
   });
 
   const onSubmit = form.onSubmit((values) => {
-    updateDeck((prev) => ({ ...prev, ...values }));
+    updateDeck((prev) => ({ ...prev, ...values } as Deck));
     navigate("flashcards");
   });
 

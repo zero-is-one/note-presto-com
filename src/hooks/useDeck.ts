@@ -71,3 +71,4 @@ function useDeck(initialState?: string) {
 }
 
 export const DeckContainer = createContainer(useDeck);
+export const useDeckContainer = DeckContainer.useContainer;

@@ -1,5 +1,5 @@
 import { LayoutSimpleBar } from "@/components/LayoutSimpleBar/LayoutSimpleBar";
-import { DeckContainer } from "@/hooks/useDeck";
+import { useDeckContainer } from "@/hooks/useDeck";
 import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
 import { ActionIcon, Button, Group, Title, rem } from "@mantine/core";
 import { useListState } from "@mantine/hooks";
@@ -13,8 +13,8 @@ import { Link, useNavigate } from "react-router-dom";
 
 export function ViewFlashcards() {
   const navigate = useNavigate();
-  const { deck, save: saveDeck } = DeckContainer.useContainer();
-  const [state, handlers] = useListState(deck.flashcards);
+  const { deck, save: saveDeck } = useDeckContainer();
+  const [state, handlers] = useListState(deck?.flashcards);
 
   const items = state.map((item, index) => (
     <Draggable key={item.id} index={index} draggableId={item.id}>

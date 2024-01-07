@@ -1,7 +1,7 @@
 import { FlashcardTextEditor } from "@/components/FlashcardTextEditor/FlashcardTextEditor";
 import { LayoutSimpleBar } from "@/components/LayoutSimpleBar/LayoutSimpleBar";
 import { MusicNotePicker } from "@/components/MusicNotePicker/MusicNotePicker";
-import { DeckContainer } from "@/hooks/useDeck";
+import { useDeckContainer } from "@/hooks/useDeck";
 import { ActionIcon, Button, Card, Divider, Text } from "@mantine/core";
 import { useState } from "react";
 import { MdArrowBack } from "react-icons/md";
@@ -10,11 +10,7 @@ import { Note } from "tonal";
 
 export const ViewFlashcard = () => {
   const navigate = useNavigate();
-  const {
-    update: updateDeck,
-    deck,
-    getDefaultFlashcard,
-  } = DeckContainer.useContainer();
+  const { update: updateDeck, deck, getDefaultFlashcard } = useDeckContainer();
   const { flashcardId } = useParams();
   const [flashcard, setFlashcard] = useState(
     flashcardId === "new"
