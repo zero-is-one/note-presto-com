@@ -1,18 +1,22 @@
-import { LayoutSimpleBar } from "@/components/LayoutSimpleBar/LayoutSimpleBar";
 import { useDeckContainer } from "@/hooks/useDeck";
-import { GameDataContainer } from "@/hooks/useGameData";
-import { Start } from "./Start";
+import { GameDataContainer, useGameDataContainer } from "@/hooks/useGameData";
+import { ScreenPlay } from "./ScreenPlay";
+import { ScreenStart } from "./ScreenStart";
 
 export const PagePlay = () => {
-  const { deck } = useDeckContainer();
-
-  if (!deck) return null;
-
   return (
-    <GameDataContainer.Provider initialState={{ flashcards: deck?.flashcards }}>
-      <LayoutSimpleBar>
-        <Start />
-      </LayoutSimpleBar>
+    <GameDataContainer.Provider initialState={{ flashcards: [] }}>
+      <Screen />
     </GameDataContainer.Provider>
   );
+};
+
+const Screen = () => {
+  const { deck } = useDeckContainer();
+  const { flashcards } = useGameDataContainer();
+
+  if (!deck) return <div>Deck not found</div>;
+  if (flashcards.length === 0) return <ScreenStart />;
+
+  return <ScreenPlay />;
 };

@@ -19,9 +19,9 @@ export const FlashcardTextEditor = ({
   onChange,
   editable = true,
 }: {
-  placeholder: string;
-  content: string;
-  onChange: (content: string) => void;
+  placeholder?: string;
+  content?: string;
+  onChange?: (content: string) => void;
   editable?: boolean;
 }) => {
   const editor = useEditor({
@@ -40,6 +40,7 @@ export const FlashcardTextEditor = ({
     ],
     content,
     onUpdate({ editor }) {
+      if (!onChange) return;
       onChange(editor.getHTML());
     },
   });

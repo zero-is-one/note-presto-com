@@ -12,7 +12,7 @@ export const useGameData = (initialState?: GameData) => {
   }
 
   const [gameData, setGameData] = useState<GameData>(initialState);
-  return { gameData, setGameData };
+  return { ...gameData, setGameData };
 };
 
 export const GameDataContainer = createContainer(useGameData);
