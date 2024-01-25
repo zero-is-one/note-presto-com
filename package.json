@@ -28,6 +28,7 @@
     "@tiptap/react": "^2.1.13",
     "@tiptap/starter-kit": "^2.1.13",
     "abcjs": "^6.2.3",
+    "array-move": "^4.0.0",
     "firebase": "^10.7.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -36,7 +37,8 @@
     "react-icons": "^4.12.0",
     "react-router-dom": "^6.21.0",
     "tonal": "^5.1.2",
-    "unstated-next": "^1.1.0"
+    "unstated-next": "^1.1.0",
+    "zustand": "^4.4.7"
   },
   "devDependencies": {
     "@types/node": "^20.10.5",

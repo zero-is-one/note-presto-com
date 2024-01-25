@@ -5,11 +5,14 @@ import "@mantine/core/styles.css";
 import "@mantine/tiptap/styles.css";
 import React from "react";
 import ReactDOM from "react-dom/client";
+import { MicrophoneProvider } from "./contexts/MicrophoneContext";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <MantineProvider theme={theme}>
-      <Router />
+      <MicrophoneProvider>
+        <Router />
+      </MicrophoneProvider>
     </MantineProvider>
   </React.StrictMode>,
 );

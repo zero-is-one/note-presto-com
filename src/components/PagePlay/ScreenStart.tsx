@@ -1,14 +1,21 @@
 import { LayoutSimpleBar } from "@/components/LayoutSimpleBar/LayoutSimpleBar";
+import { useGameStateStoreContext } from "@/contexts/GameStateContext";
+
 import { DeckContainer } from "@/hooks/useDeck";
-import { useGameDataContainer } from "@/hooks/useGameData";
+
+import { useMicrophoneContext } from "@/hooks/useMicrophoneContext";
 import { Button, Card, Container, Text, Title } from "@mantine/core";
 
 export const ScreenStart = () => {
+  const { requestMicrophone } = useMicrophoneContext();
   const { deck } = DeckContainer.useContainer();
-  const { setGameData } = useGameDataContainer();
+  const { setFlashcards } = useGameStateStoreContext();
 
-  const play = () => {
-    setGameData({ flashcards: deck?.flashcards || [] });
+  const play = async () => {
+    const result = await requestMicrophone();
+    if (!result) return alert("no microphone");
+
+    setFlashcards(deck?.flashcards || []);
   };
 
   return (

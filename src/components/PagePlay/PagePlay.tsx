@@ -1,19 +1,22 @@
+import {
+  GameStateStoreProvider,
+  useGameStateStoreContext,
+} from "@/contexts/GameStateContext";
 import { useDeckContainer } from "@/hooks/useDeck";
-import { GameDataContainer, useGameDataContainer } from "@/hooks/useGameData";
 import { ScreenPlay } from "./ScreenPlay";
 import { ScreenStart } from "./ScreenStart";
 
 export const PagePlay = () => {
   return (
-    <GameDataContainer.Provider initialState={{ flashcards: [] }}>
+    <GameStateStoreProvider>
       <Screen />
-    </GameDataContainer.Provider>
+    </GameStateStoreProvider>
   );
 };
 
 const Screen = () => {
   const { deck } = useDeckContainer();
-  const { flashcards } = useGameDataContainer();
+  const { flashcards } = useGameStateStoreContext();
 
   if (!deck) return <div>Deck not found</div>;
   if (flashcards.length === 0) return <ScreenStart />;

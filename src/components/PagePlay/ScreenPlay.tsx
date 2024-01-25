@@ -1,8 +1,9 @@
-import { useGameDataContainer } from "@/hooks/useGameData";
+import { useGameStateStoreContext } from "@/contexts/GameStateContext";
 import { Container } from "@mantine/core";
 import { FlashcardTextEditor } from "../FlashcardTextEditor/FlashcardTextEditor";
+
 export const ScreenPlay = () => {
-  const { flashcards } = useGameDataContainer();
+  const { flashcards } = useGameStateStoreContext();
   const flashcard = flashcards[0];
 
   console.log(flashcard);
