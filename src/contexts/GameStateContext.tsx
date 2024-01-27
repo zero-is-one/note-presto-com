@@ -10,6 +10,7 @@ const promotionTeirs = [
 ];
 
 type FlashcardWithStats = Flashcard & {
+  updatedAt: Date;
   streak: number;
   correct: number;
   incorrect: number;
@@ -18,7 +19,8 @@ type FlashcardWithStats = Flashcard & {
 
 interface GameState {
   flashcards: FlashcardWithStats[];
-  promote: () => void;
+  promoteFlashcard: () => void;
+  demoteFlashcard: () => void;
   setFlashcards: (flashcards: Flashcard[]) => void;
 }
 
@@ -32,13 +34,14 @@ const createGameStateStore = () =>
         correct: 0,
         incorrect: 0,
         hasPerfectStreak: false,
+        updatedAt: new Date(),
       }));
 
       set({
         flashcards: flashcardsWithStats,
       });
     },
-    promote: () => {
+    promoteFlashcard: () => {
       set((state) => {
         const [current, ...rest] = state.flashcards;
         const streak = current.streak + (current.hasPerfectStreak ? 2 : 1);
@@ -47,13 +50,36 @@ const createGameStateStore = () =>
           ...current,
           streak,
           correct: current.correct + 1,
+          updatedAt: new Date(),
         };
 
-        const arrayPosition: number =
-          promotionTeirs.indexOf(streak) + Math.floor(Math.random() * 4);
+        const arrayPosition: number = Math.min(
+          state.flashcards.length - 1,
+          promotionTeirs[streak] + Math.floor(Math.random() * 4),
+        );
 
         const flashcards = [...rest];
         flashcards.splice(arrayPosition, 0, updated);
+
+        return {
+          flashcards,
+        };
+      });
+    },
+    demoteFlashcard: () => {
+      set((state) => {
+        const [current, ...rest] = state.flashcards;
+
+        const updated = {
+          ...current,
+          streak: 0,
+          incorrect: current.incorrect + 1,
+          hasPerfectStreak: false,
+          updatedAt: new Date(),
+        };
+
+        const flashcards = [...rest];
+        flashcards.splice(Math.floor(Math.random() * 4), 0, updated);
 
         return {
           flashcards,

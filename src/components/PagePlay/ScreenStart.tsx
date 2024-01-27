@@ -3,7 +3,7 @@ import { useGameStateStoreContext } from "@/contexts/GameStateContext";
 
 import { DeckContainer } from "@/hooks/useDeck";
 
-import { useMicrophoneContext } from "@/hooks/useMicrophoneContext";
+import { useMicrophoneContext } from "@/contexts/MicrophoneContext";
 import { Button, Card, Container, Text, Title } from "@mantine/core";
 
 export const ScreenStart = () => {

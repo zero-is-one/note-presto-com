@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext, useContext, useState } from "react";
 
 export type MicrophoneContextType = {
   requestMicrophone: () => Promise<boolean>;
@@ -106,4 +106,14 @@ export const MicrophoneProvider: React.FC<{
       {children}
     </MicrophoneContext.Provider>
   );
+};
+
+export const useMicrophoneContext = () => {
+  const context = useContext(MicrophoneContext);
+  if (!context) {
+    throw new Error(
+      "useMicrophoneContext must be used within a Microphone Provider",
+    );
+  }
+  return context as MicrophoneContextType;
 };

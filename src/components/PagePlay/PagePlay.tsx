@@ -1,6 +1,6 @@
 import {
   GameStateStoreProvider,
-  useGameStateStoreContext,
+  useGameStateStore,
 } from "@/contexts/GameStateContext";
 import { useDeckContainer } from "@/hooks/useDeck";
 import { ScreenPlay } from "./ScreenPlay";
@@ -16,7 +16,7 @@ export const PagePlay = () => {
 
 const Screen = () => {
   const { deck } = useDeckContainer();
-  const { flashcards } = useGameStateStoreContext();
+  const flashcards = useGameStateStore()((s) => s.flashcards);
 
   if (!deck) return <div>Deck not found</div>;
   if (flashcards.length === 0) return <ScreenStart />;
