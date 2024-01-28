@@ -24,9 +24,13 @@ export const useFlashcardStats = () => {
 
   const accuracy = (correct / attemptCount) * 100;
 
-  const unattemptedCount = flashcards.reduce((acc, curr) => {
-    return acc + curr.correct === 0 && curr.incorrect === 0 ? 1 : 0;
+  const untouchedCount = flashcards.reduce((acc, curr) => {
+    return acc + (curr.correct === 0 && curr.incorrect === 0 ? 1 : 0);
   }, 0);
+
+  const touchedCount = flashcards.length - untouchedCount;
+
+  const flashcardsCount = flashcards.length;
 
   return {
     updatedAt,
@@ -34,6 +38,8 @@ export const useFlashcardStats = () => {
     correct,
     incorrect,
     accuracy,
-    unattemptedCount,
+    untouchedCount,
+    touchedCount,
+    flashcardsCount,
   };
 };

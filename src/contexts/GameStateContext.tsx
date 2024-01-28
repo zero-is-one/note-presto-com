@@ -14,7 +14,6 @@ type FlashcardWithStats = Flashcard & {
   streak: number;
   correct: number;
   incorrect: number;
-  hasPerfectStreak: boolean;
 };
 
 interface GameState {
@@ -33,7 +32,7 @@ const createGameStateStore = () =>
         streak: 0,
         correct: 0,
         incorrect: 0,
-        hasPerfectStreak: false,
+
         updatedAt: new Date(),
       }));
 
@@ -44,7 +43,8 @@ const createGameStateStore = () =>
     promoteFlashcard: () => {
       set((state) => {
         const [current, ...rest] = state.flashcards;
-        const streak = current.streak + (current.hasPerfectStreak ? 2 : 1);
+        const hasPerfectStreak = current.correct > 0 && current.incorrect === 0;
+        const streak = current.streak + (hasPerfectStreak ? 2 : 1);
 
         const updated = {
           ...current,
@@ -74,7 +74,6 @@ const createGameStateStore = () =>
           ...current,
           streak: 0,
           incorrect: current.incorrect + 1,
-          hasPerfectStreak: false,
           updatedAt: new Date(),
         };
 

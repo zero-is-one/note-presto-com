@@ -13,6 +13,18 @@ import {
 } from "./SheetMusicNoteExtension";
 import { InsertControlSvgEmbded, SvgEmbedExtension } from "./SvgEmbedExtension";
 
+export const extensions = [
+  StarterKit,
+  Underline,
+  Link,
+  Superscript,
+  SubScript,
+  Highlight,
+  TextAlign.configure({ types: ["heading", "paragraph"] }),
+  SheetMusicNoteExtension,
+  SvgEmbedExtension,
+];
+
 export const FlashcardTextEditor = ({
   placeholder,
   content,
@@ -26,18 +38,7 @@ export const FlashcardTextEditor = ({
 }) => {
   const editor = useEditor({
     editable,
-    extensions: [
-      Placeholder.configure({ placeholder }),
-      StarterKit,
-      Underline,
-      Link,
-      Superscript,
-      SubScript,
-      Highlight,
-      TextAlign.configure({ types: ["heading", "paragraph"] }),
-      SheetMusicNoteExtension,
-      SvgEmbedExtension,
-    ],
+    extensions: [Placeholder.configure({ placeholder }), ...extensions],
     content,
     onUpdate({ editor }) {
       if (!onChange) return;

@@ -1,8 +1,10 @@
+import { extensions } from "@/components/FlashcardTextEditor/FlashcardTextEditor";
 import { LayoutSimpleBar } from "@/components/LayoutSimpleBar/LayoutSimpleBar";
 import { useDeckContainer } from "@/hooks/useDeck";
 import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
 import { ActionIcon, Button, Group, Title, rem } from "@mantine/core";
 import { useListState } from "@mantine/hooks";
+import { generateJSON } from "@tiptap/html";
 import {
   MdArrowBack,
   MdDragIndicator,
@@ -46,7 +48,8 @@ export function ViewFlashcards() {
             variant="light"
             rightSection={<MdEditNote fullWidth size={14} />}
           >
-            {item.noteName} -{item.id}{" "}
+            {item.noteName} - {simplify(item.prompt)} -{" "}
+            {simplify(item.response)}
           </Button>
         </Button.Group>
       )}
@@ -111,3 +114,39 @@ function getDragXAxisLockStyle(style) {
   }
   return style;
 }
+
+type Node = {
+  type: string;
+  content: Node[];
+  text: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  attrs: Record<string, any>;
+};
+function simplify(markdown: string) {
+  const json = generateJSON(markdown, extensions) as Node;
+  let result = "";
+
+  console.log(json);
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const recurse = (node: Node) => {
+    if (node.type === "text") result += node.text;
+
+    if (node.type === "sheetMusicNoteExtension")
+      result += `♫ ${node.attrs.noteName} `;
+
+    if (node.type === "svgEmbedExtension") result += `{SVG}`;
+
+    if (node.content) node.content.forEach(recurse);
+  };
+
+  recurse(json);
+
+  return "[" + result + "]";
+}
+
+// json.content.forEach((node: { type: string; attrs: Record<string, any> }) => {
+//   if (node.type === "sheetMusicNoteExtension") {
+//     result += `♫ ${node.attrs.noteName} `;
+//   }
+// });

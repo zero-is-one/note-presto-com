@@ -17,8 +17,6 @@ export const PageHome = () => {
   const navigate = useNavigate();
   const { decks, loading } = useDecks();
 
-  console.log(decks);
-
   return (
     <LayoutMain>
       {" "}

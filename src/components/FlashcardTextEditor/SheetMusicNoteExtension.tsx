@@ -96,7 +96,7 @@ export const SheetMusicNoteExtension = Node.create({
   },
 
   renderHTML({ HTMLAttributes }) {
-    return ["single-note", mergeAttributes(HTMLAttributes)];
+    return ["sheet-music-note", mergeAttributes(HTMLAttributes)];
   },
 
   addNodeView() {

@@ -18,6 +18,8 @@ export const ViewFlashcard = () => {
       : deck?.flashcards.find((f) => f.id === flashcardId),
   );
 
+  console.log(flashcard);
+
   if (!flashcard) return <LayoutSimpleBar>Flashcard not found</LayoutSimpleBar>;
 
   return (
@@ -67,6 +69,7 @@ export const ViewFlashcard = () => {
       <FlashcardTextEditor
         content={flashcard.prompt}
         onChange={(prompt) => {
+          console.log(prompt);
           setFlashcard({ ...flashcard, prompt });
         }}
         placeholder="Front of card text. This will be viewed before answer is shown"
