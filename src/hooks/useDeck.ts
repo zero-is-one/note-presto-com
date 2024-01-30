@@ -28,6 +28,11 @@ const getDefaultFlashcard = () => {
   } satisfies Flashcard;
 };
 
+export const cloneFlashcard = (flashcard: Flashcard) => {
+  const id = getDefaultFlashcard().id;
+  return { ...flashcard, id } satisfies Flashcard;
+};
+
 function useDeck(initialState?: string) {
   const deckId = initialState;
   const [deck, setDeck] = useState<Deck | undefined>();
@@ -67,7 +72,15 @@ function useDeck(initialState?: string) {
     });
   };
 
-  return { loading, error, getDefaultFlashcard, deck, update: setDeck, save };
+  return {
+    loading,
+    error,
+    getDefaultFlashcard,
+    deck,
+    update: setDeck,
+    save,
+    cloneFlashcard,
+  };
 }
 
 export const DeckContainer = createContainer(useDeck);

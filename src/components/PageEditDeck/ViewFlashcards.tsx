@@ -1,6 +1,6 @@
 import { extensions } from "@/components/FlashcardTextEditor/FlashcardTextEditor";
 import { LayoutSimpleBar } from "@/components/LayoutSimpleBar/LayoutSimpleBar";
-import { useDeckContainer } from "@/hooks/useDeck";
+import { cloneFlashcard, useDeckContainer } from "@/hooks/useDeck";
 import { Flashcard } from "@/types";
 import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
 import {
@@ -16,7 +16,7 @@ import { useListState } from "@mantine/hooks";
 import { modals } from "@mantine/modals";
 import { generateJSON } from "@tiptap/html";
 import { useState } from "react";
-import { FaCheck } from "react-icons/fa";
+import { FaCheck, FaClone } from "react-icons/fa";
 import { MdArrowBack, MdDragIndicator, MdOutlinePostAdd } from "react-icons/md";
 import { RiDeleteBin2Fill, RiListSettingsFill } from "react-icons/ri";
 
@@ -44,7 +44,9 @@ export function ViewFlashcards() {
       labels: { confirm: "Confirm", cancel: "Cancel" },
       //onCancel: () => console.log("Cancel"),
       onConfirm: () => {
-        handlers.remove(deck?.flashcards.indexOf(flashcard) || 0);
+        const index = state.findIndex((f) => f.id === flashcard.id);
+        if (index === undefined) return;
+        handlers.remove(index);
       },
     });
 
@@ -165,6 +167,14 @@ export function ViewFlashcards() {
                           {simplify(item.response)}
                         </Button>
 
+                        <Button
+                          color={"blue"}
+                          onClick={() => {
+                            handlers.insert(index + 1, cloneFlashcard(item));
+                          }}
+                        >
+                          <FaClone size={"1.5rem"} />
+                        </Button>
                         <Button
                           color={"red"}
                           onClick={() => {
