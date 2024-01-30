@@ -1,5 +1,3 @@
-// Provider and Context
-
 import { Flashcard } from "@/types";
 import { createStoreContext } from "@/utils/zustandStoreContext";
 import { create } from "zustand";

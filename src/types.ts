@@ -9,6 +9,7 @@ export type Flashcard = {
 };
 
 export type Deck = {
+  id?: string;
   name: string;
   description: string;
   flashcards: Flashcard[];

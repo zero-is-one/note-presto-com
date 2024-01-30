@@ -1,5 +1,5 @@
 import { LayoutSimpleBar } from "@/components/LayoutSimpleBar/LayoutSimpleBar";
-import { useDeckContainer } from "@/hooks/useDeck";
+import { useDeckStoreContext } from "@/hooks/useDeckStoreContext";
 import { Deck } from "@/types";
 import { Button, CloseButton, Stack, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
@@ -7,7 +7,8 @@ import { useNavigate } from "react-router-dom";
 
 export const ViewGeneral = () => {
   const navigate = useNavigate();
-  const { update: updateDeck, deck } = useDeckContainer();
+  const deckStore = useDeckStoreContext();
+  const deck = deckStore.getState();
 
   const form = useForm({
     initialValues: {
@@ -23,7 +24,7 @@ export const ViewGeneral = () => {
   });
 
   const onSubmit = form.onSubmit((values) => {
-    updateDeck((prev) => ({ ...prev, ...values } as Deck));
+    deckStore.setState((prev) => ({ ...prev, ...values } as Deck));
     navigate("flashcards");
   });
 

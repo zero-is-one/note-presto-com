@@ -1,6 +1,10 @@
 import { extensions } from "@/components/FlashcardTextEditor/FlashcardTextEditor";
 import { LayoutSimpleBar } from "@/components/LayoutSimpleBar/LayoutSimpleBar";
-import { cloneFlashcard, useDeckContainer } from "@/hooks/useDeck";
+import {
+  generateNewFlashcardId,
+  save as saveDeck,
+  useDeckStoreContext,
+} from "@/hooks/useDeckStoreContext";
 import { Flashcard } from "@/types";
 import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
 import {
@@ -12,7 +16,6 @@ import {
   Title,
   rem,
 } from "@mantine/core";
-import { useListState } from "@mantine/hooks";
 import { modals } from "@mantine/modals";
 import { generateJSON } from "@tiptap/html";
 import { useState } from "react";
@@ -24,8 +27,8 @@ import { Link, useNavigate } from "react-router-dom";
 
 export function ViewFlashcards() {
   const navigate = useNavigate();
-  const { deck, save: saveDeck } = useDeckContainer();
-  const [state, handlers] = useListState(deck?.flashcards);
+  const deckStore = useDeckStoreContext();
+  const deck = deckStore((d) => d);
   const [isEditMode, setIsEditMode] = useState(false);
 
   const openDeleteModal = ({ flashcard }: { flashcard: Flashcard }) =>
@@ -44,9 +47,10 @@ export function ViewFlashcards() {
       labels: { confirm: "Confirm", cancel: "Cancel" },
       //onCancel: () => console.log("Cancel"),
       onConfirm: () => {
-        const index = state.findIndex((f) => f.id === flashcard.id);
-        if (index === undefined) return;
-        handlers.remove(index);
+        deckStore.setState((prev) => ({
+          ...prev,
+          flashcards: prev.flashcards.filter((f) => f.id !== flashcard.id),
+        }));
       },
     });
 
@@ -60,7 +64,7 @@ export function ViewFlashcards() {
       rightItem={
         <Button
           onClick={async () => {
-            await saveDeck();
+            await saveDeck(deck);
             navigate("/");
           }}
         >
@@ -117,11 +121,11 @@ export function ViewFlashcards() {
       </Group>
       {!isEditMode && (
         <>
-          {state.map((item) => (
-            <Button.Group mb={6} key={item.id}>
-              <Button w={"100%"} variant="light" component={Link} to={item.id}>
-                {item.noteName} - {simplify(item.prompt)} -{" "}
-                {simplify(item.response)}
+          {deck.flashcards.map((card) => (
+            <Button.Group mb={6} key={card.id}>
+              <Button w={"100%"} variant="light" component={Link} to={card.id}>
+                {card.noteName} - {simplify(card.prompt)} -{" "}
+                {simplify(card.response)}
               </Button>
             </Button.Group>
           ))}
@@ -130,16 +134,24 @@ export function ViewFlashcards() {
       {isEditMode && (
         <DragDropContext
           onDragEnd={({ destination, source }) =>
-            handlers.reorder({
-              from: source.index,
-              to: destination?.index || 0,
+            deckStore.setState((prev) => {
+              if (!destination) return prev;
+
+              const newFlashcards = [...prev.flashcards];
+              const [removed] = newFlashcards.splice(source.index, 1);
+              newFlashcards.splice(destination.index, 0, removed);
+
+              return {
+                ...prev,
+                flashcards: newFlashcards,
+              };
             })
           }
         >
           <Droppable droppableId="dnd-list" direction="vertical">
             {(provided) => (
               <div {...provided.droppableProps} ref={provided.innerRef}>
-                {state.map((item, index) => (
+                {deck.flashcards.map((item, index) => (
                   <Draggable key={item.id} index={index} draggableId={item.id}>
                     {(provided, snapshot) => (
                       <Button.Group
@@ -149,7 +161,7 @@ export function ViewFlashcards() {
                         style={getDragXAxisLockStyle({
                           ...provided.draggableProps.style,
                           ...snapshot,
-                        })}
+                        } as React.CSSProperties)}
                       >
                         <Button
                           component={"div"}
@@ -170,7 +182,23 @@ export function ViewFlashcards() {
                         <Button
                           color={"blue"}
                           onClick={() => {
-                            handlers.insert(index + 1, cloneFlashcard(item));
+                            deckStore.setState((prev) => {
+                              const clonedFlashcard = {
+                                ...item,
+                                id: generateNewFlashcardId(),
+                              };
+
+                              const newFlashcards = [...prev.flashcards];
+                              newFlashcards.splice(
+                                index + 1,
+                                0,
+                                clonedFlashcard,
+                              );
+                              return {
+                                ...prev,
+                                flashcards: newFlashcards,
+                              };
+                            });
                           }}
                         >
                           <FaClone size={"1.5rem"} />
@@ -197,7 +225,7 @@ export function ViewFlashcards() {
   );
 }
 
-function getDragXAxisLockStyle(style) {
+function getDragXAxisLockStyle(style: React.CSSProperties) {
   if (style?.transform) {
     const axisLockY = `translate(0px, ${style.transform.split(",").pop()}`;
     return {

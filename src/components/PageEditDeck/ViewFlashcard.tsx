@@ -1,7 +1,10 @@
 import { FlashcardTextEditor } from "@/components/FlashcardTextEditor/FlashcardTextEditor";
 import { LayoutSimpleBar } from "@/components/LayoutSimpleBar/LayoutSimpleBar";
 import { MusicNotePicker } from "@/components/MusicNotePicker/MusicNotePicker";
-import { useDeckContainer } from "@/hooks/useDeck";
+import {
+  generateNewFlashcard,
+  useDeckStoreContext,
+} from "@/hooks/useDeckStoreContext";
 import { ActionIcon, Button, Card, Divider, Text } from "@mantine/core";
 import { useState } from "react";
 import { MdArrowBack } from "react-icons/md";
@@ -10,15 +13,14 @@ import { Note } from "tonal";
 
 export const ViewFlashcard = () => {
   const navigate = useNavigate();
-  const { update: updateDeck, deck, getDefaultFlashcard } = useDeckContainer();
+  const deckStore = useDeckStoreContext();
+  const deck = deckStore.getState();
   const { flashcardId } = useParams();
   const [flashcard, setFlashcard] = useState(
     flashcardId === "new"
-      ? getDefaultFlashcard()
+      ? generateNewFlashcard()
       : deck?.flashcards.find((f) => f.id === flashcardId),
   );
-
-  console.log(flashcard);
 
   if (!flashcard) return <LayoutSimpleBar>Flashcard not found</LayoutSimpleBar>;
 
@@ -33,20 +35,22 @@ export const ViewFlashcard = () => {
         <Button
           onClick={() => {
             if (!deck) return;
+
             if (flashcardId === "new") {
-              updateDeck({
+              deckStore.setState({
                 ...deck,
                 flashcards: [...deck.flashcards, flashcard],
               });
               return navigate(-1);
             }
 
-            updateDeck({
+            deckStore.setState({
               ...deck,
               flashcards: deck.flashcards.map((f) =>
                 f.id === flashcard.id ? flashcard : f,
               ),
             });
+
             navigate(-1);
           }}
         >
@@ -60,6 +64,7 @@ export const ViewFlashcard = () => {
         </Text>
         <MusicNotePicker
           onChange={(noteName) => {
+            console.log(noteName);
             setFlashcard({ ...flashcard, noteName });
           }}
           noteName={flashcard.noteName}

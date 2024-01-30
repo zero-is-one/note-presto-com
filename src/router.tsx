@@ -5,8 +5,6 @@ import { PageHome } from "@/components/PageHome/PageHome";
 import { PageNotFound } from "@/components/PageNotFound/PageNotFound";
 import { PagePlay } from "./components/PagePlay/PagePlay";
 
-import { DeckProviderPageGuard } from "./components/DeckProviderPageGuard/DeckProviderPageGuard";
-
 const router = createBrowserRouter(
   [
     {
@@ -23,19 +21,11 @@ const router = createBrowserRouter(
     },
     {
       path: "/decks/:deckId/edit/*",
-      element: (
-        <DeckProviderPageGuard>
-          <PageEditDeck />
-        </DeckProviderPageGuard>
-      ),
+      element: <PageEditDeck />,
     },
     {
       path: "/play/:deckId",
-      element: (
-        <DeckProviderPageGuard>
-          <PagePlay />
-        </DeckProviderPageGuard>
-      ),
+      element: <PagePlay />,
     },
     {
       path: "/*",

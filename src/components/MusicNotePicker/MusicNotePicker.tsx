@@ -19,7 +19,7 @@ export const MusicNotePicker = ({
         value={note.letter || "C"}
         data={noteLetters.map((l) => ({ value: l, label: l }))}
         onChange={(letter) => {
-          onChange(`${letter}${note.acc}${note.oct}`);
+          onChange(`${!letter ? note.letter : letter}${note.acc}${note.oct}`);
         }}
       />
 
@@ -35,7 +35,7 @@ export const MusicNotePicker = ({
             .replace("natural", "♮ (natural)"),
         }))}
         onChange={(acc) => {
-          onChange(`${note.letter}${acc}${note.oct}`);
+          onChange(`${note.letter}${acc === null ? note.acc : acc}${note.oct}`);
         }}
       />
 
@@ -48,7 +48,7 @@ export const MusicNotePicker = ({
           label: oct,
         }))}
         onChange={(oct) => {
-          onChange(`${note.letter}${note.acc}${oct}`);
+          onChange(`${note.letter}${note.acc}${oct === null ? note.oct : oct}`);
         }}
       />
     </SimpleGrid>
