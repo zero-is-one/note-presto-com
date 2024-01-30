@@ -2,7 +2,7 @@ import { useCountdown } from "@/hooks/useCountdown";
 import { useDetectMicrophoneNote } from "@/hooks/useDetectMicrophoneNote";
 import { useFlashcardStats } from "@/hooks/useFlashcardStats";
 import { useGameStateFlashcard } from "@/hooks/useGameStateFlashcard";
-import { Container, Group, Progress, Stack, Text } from "@mantine/core";
+import { Box, Container, Group, Progress, Stack, Text } from "@mantine/core";
 import { useState } from "react";
 import { BiSolidBinoculars } from "react-icons/bi";
 import { IoMdMusicalNotes } from "react-icons/io";
@@ -37,50 +37,60 @@ export const Flashcard = () => {
   });
 
   return (
-    <Stack mih={"100dvh"} align="center" justify="center" pos="relative">
-      <Container>
-        <Stack align="center">
+    <Container>
+      <Stack
+        w={"100%"}
+        mih={"100dvh"}
+        align="center"
+        justify="center"
+        pos="relative"
+      >
+        <Box w={"100%"}>
           <FlashcardTextEditor content={flashcard.prompt} editable={false} />
-          {isCountdownComplete && (
+        </Box>
+        {isCountdownComplete && (
+          <Box w={"100%"}>
             <FlashcardTextEditor
               content={flashcard.response}
               editable={false}
             />
-          )}
-        </Stack>
-      </Container>
+          </Box>
+        )}
 
-      <Group align="center" p={"sm"} pos={"absolute"} bottom={0} left={0}>
-        <BiSolidBinoculars size={22} />
-        <Text style={{ verticalAlign: "middle" }}>{attemptCount}</Text>
-      </Group>
+        <Group align="center" p={"sm"} pos={"absolute"} bottom={0} left={0}>
+          <BiSolidBinoculars size={22} />
+          <Text style={{ verticalAlign: "middle" }}>{attemptCount}</Text>
+        </Group>
 
-      <Group
-        align="center"
-        p={"sm"}
-        pos={"absolute"}
-        bottom={0}
-        left={"50%"}
-        style={{ transform: "translate(-50%, 0)" }}
-      >
-        <TbCardsFilled size={22} />
-        <Text style={{ verticalAlign: "middle" }}>
-          {touchedCount} / {flashcardsCount}
-        </Text>
-      </Group>
+        <Group
+          align="center"
+          p={"sm"}
+          pos={"absolute"}
+          bottom={0}
+          left={"50%"}
+          style={{ transform: "translate(-50%, 0)" }}
+        >
+          <TbCardsFilled size={22} />
+          <Text style={{ verticalAlign: "middle" }}>
+            {touchedCount} / {flashcardsCount}
+          </Text>
+        </Group>
 
-      <Group align="center" p={"sm"} pos={"absolute"} bottom={0} right={0}>
-        <IoMdMusicalNotes size={22} />
-        <Text style={{ verticalAlign: "middle" }}>{detectedNote || "---"}</Text>
-      </Group>
+        <Group align="center" p={"sm"} pos={"absolute"} bottom={0} right={0}>
+          <IoMdMusicalNotes size={22} />
+          <Text style={{ verticalAlign: "middle" }}>
+            {detectedNote || "---"}
+          </Text>
+        </Group>
 
-      <Progress
-        radius={0}
-        value={Math.round(percentComplete * 100)}
-        pos={"absolute"}
-        bottom={0}
-        w={"100%"}
-      />
-    </Stack>
+        <Progress
+          radius={0}
+          value={Math.round(percentComplete * 100)}
+          pos={"absolute"}
+          bottom={0}
+          w={"100%"}
+        />
+      </Stack>
+    </Container>
   );
 };
