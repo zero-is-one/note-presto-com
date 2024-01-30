@@ -8,13 +8,13 @@ export const ScreenStart = () => {
   const { requestMicrophone } = useMicrophoneContext();
   const deckStore = useDeckStoreContext();
   const deck = deckStore.getState();
-  const { setFlashcards } = useGameStateStoreContext();
+  const { initialize } = useGameStateStoreContext();
 
   const play = async () => {
     const result = await requestMicrophone();
     if (!result) return alert("no microphone");
 
-    setFlashcards(deck?.flashcards || []);
+    initialize(deck?.flashcards || []);
   };
 
   return (

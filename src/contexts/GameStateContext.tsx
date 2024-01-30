@@ -18,19 +18,18 @@ interface GameState {
   flashcards: FlashcardWithStats[];
   promoteFlashcard: () => void;
   demoteFlashcard: () => void;
-  setFlashcards: (flashcards: Flashcard[]) => void;
+  initialize: (flashcards: Flashcard[]) => void;
 }
 
 const createGameStateStore = () =>
   create<GameState>((set) => ({
     flashcards: [],
-    setFlashcards: (flashcards: Flashcard[]) => {
+    initialize: (flashcards: Flashcard[]) => {
       const flashcardsWithStats = flashcards.map((flashcard) => ({
         ...flashcard,
         streak: 0,
         correct: 0,
         incorrect: 0,
-
         updatedAt: new Date(),
       }));
 
