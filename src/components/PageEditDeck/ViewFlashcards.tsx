@@ -48,7 +48,6 @@ export function ViewFlashcards() {
       //onCancel: () => console.log("Cancel"),
       onConfirm: () => {
         deckStore.setState((prev) => ({
-          ...prev,
           flashcards: prev.flashcards.filter((f) => f.id !== flashcard.id),
         }));
       },
@@ -195,7 +194,6 @@ export function ViewFlashcards() {
                                 clonedFlashcard,
                               );
                               return {
-                                ...prev,
                                 flashcards: newFlashcards,
                               };
                             });

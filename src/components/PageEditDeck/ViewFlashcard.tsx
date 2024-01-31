@@ -38,14 +38,12 @@ export const ViewFlashcard = () => {
 
             if (flashcardId === "new") {
               deckStore.setState({
-                ...deck,
                 flashcards: [...deck.flashcards, flashcard],
               });
               return navigate(-1);
             }
 
             deckStore.setState({
-              ...deck,
               flashcards: deck.flashcards.map((f) =>
                 f.id === flashcard.id ? flashcard : f,
               ),
