@@ -14,10 +14,6 @@ export const useDeckStoreContext = () => {
   return useContext(StoreContext);
 };
 
-export const useDeckContext = () => {
-  return useDeckStoreContext();
-};
-
 export const generateNewFlashcardId = () => {
   return Math.random().toString(36).replace("0.", "");
 };

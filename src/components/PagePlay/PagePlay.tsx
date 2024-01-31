@@ -1,7 +1,6 @@
-import {
-  GameStateStoreProvider,
-  useGameStateStore,
-} from "@/contexts/GameStateContext";
+import { StoreProvider as GameStateStoreProvider } from "@/contexts/GameStateContext";
+
+import { useGameStateStoreContext } from "@/hooks/useGameStateContext";
 import { DeckResource } from "../DeckResource/DeckResource";
 import { ScreenPlay } from "./ScreenPlay";
 import { ScreenStart } from "./ScreenStart";
@@ -17,7 +16,7 @@ export const PagePlay = () => {
 };
 
 const Screen = () => {
-  const flashcards = useGameStateStore()((s) => s.flashcards);
+  const flashcards = useGameStateStoreContext()((s) => s.flashcards);
   if (flashcards.length === 0) return <ScreenStart />;
 
   return <ScreenPlay />;

@@ -1,7 +1,7 @@
-import { useGameStateStore } from "@/contexts/GameStateContext";
+import { useGameStateStoreContext } from "@/hooks/useGameStateContext";
 
 export const useFlashcardStats = () => {
-  const flashcards = useGameStateStore()((g) => g.flashcards);
+  const flashcards = useGameStateStoreContext()((g) => g.flashcards);
 
   const updatedAt = flashcards.reduce((acc, curr) => {
     if (curr.updatedAt > acc.updatedAt) {

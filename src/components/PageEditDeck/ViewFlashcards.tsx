@@ -121,12 +121,18 @@ export function ViewFlashcards() {
       {!isEditMode && (
         <>
           {deck.flashcards.map((card) => (
-            <Button.Group mb={6} key={card.id}>
-              <Button w={"100%"} variant="light" component={Link} to={card.id}>
-                {card.noteName} - {simplify(card.prompt)} -{" "}
-                {simplify(card.response)}
-              </Button>
-            </Button.Group>
+            <Button
+              mb={6}
+              key={card.id}
+              w={"100%"}
+              component={Link}
+              to={card.id}
+              variant="subtle"
+              justify="space-between"
+            >
+              {card.noteName} - {simplify(card.prompt)} -{" "}
+              {simplify(card.response)}
+            </Button>
           ))}
         </>
       )}
@@ -252,9 +258,9 @@ function simplify(markdown: string) {
     if (node.type === "sheetMusicNoteExtension")
       result += `♫ ${node.attrs.noteName}${
         node.attrs.clef !== "treble" ? " " + node.attrs.clef : ""
-      }`;
+      } `;
 
-    if (node.type === "svgEmbedExtension") result += `{SVG}`;
+    if (node.type === "svgEmbedExtension") result += ` {SVG} `;
 
     if (node.content) node.content.forEach(recurse);
   };

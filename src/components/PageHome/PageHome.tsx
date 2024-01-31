@@ -37,7 +37,7 @@ export const PageHome = () => {
         {!loading && decks.length > 0 && (
           <SimpleGrid cols={3}>
             {decks.map((deck) => (
-              <Card withBorder p="xl" radius="md">
+              <Card withBorder p="xl" radius="md" key={deck.id}>
                 <Stack>
                   <Group justify="space-between">
                     <Title order={3}>{deck.name}</Title>
